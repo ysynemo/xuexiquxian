@@ -1,0 +1,16 @@
+import linkGrabber
+
+
+links = linkGrabber.Links('https://www.tandfonline.com/loi/gcpi20')
+try:
+    gb = links.find(href=re.compile("twitter.com"),pretty=False)
+    n = len(gb)
+    for i in range(n):
+        url = gb[i]['href']
+        print(url)
+except:
+    print("没有这个链接")
+
+    
+保证返回页面的链接中匹配到twitter.com的链接得以返回。
+因为包默认返回的是一个列表，具体为列表中包含列表，分别包括href,和其他的一些键值，我们只希望返回的超链接简介明了，具体分析返回的列表内容并使用[i]['href']
