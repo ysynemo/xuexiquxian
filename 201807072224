@@ -1,0 +1,15 @@
+import openpyxl
+
+excel_document = openpyxl.load_workbook('d://用户//桌面//666.xlsx')
+print(excel_document)
+sheet = excel_document.get_sheet_by_name('Sheet1')
+
+f= open("d://用户//桌面//666.txt","w+")             #creates a new text file
+for i in range(2,1646):
+    f.write('%s\n' %(sheet.cell(row = i, column  =4).value))
+           
+f.close()
+
+写了个从EXCEL中直接提取特定内容的一个脚本，这个脚本的实用性不是很好，因为出来的数据格式杂质较多
+打开，选择Sheet1，打开txt ,    跳过题头从2开始， 一直到1646行。 使用占位符%s，这样放便回车\n穿插在里面。
+结果出来较为工整
