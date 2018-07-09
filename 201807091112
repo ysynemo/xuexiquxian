@@ -1,0 +1,41 @@
+import re
+import sys
+from collections import Counter
+
+def get_domain(url0):
+    try:
+        links = linkGrabber.Links(url0)
+        try:
+            gb = links.find(href=re.compile("twitter.com"),pretty=False)
+            n = len(gb)
+            txt=url0+'----'
+            for i in range(n):
+                url = gb[i]['href']
+                print(url)
+                txt+=url+'#'
+            with open("result.txt", 'a+',encoding='utf8',errors='ignore') as f:
+                f.write(txt+'\n')
+        except:
+            print("没有这个链接")
+    except: 
+        pass
+
+
+
+def get_txt_links():
+    '获取txt文件中的链接，重复的只获取一遍'
+    urls=[]
+    with open("666.txt", 'r',encoding='utf8',errors='ignore') as f:
+        for line in f.readlines():
+            if line.strip().startswith('http'):
+                if line.strip() in urls:
+                    pass
+                else:
+                    urls.append(line.strip())
+        return urls
+# print(get_txt_links())
+for each in get_txt_links():
+    get_domain(each)
+    
+这个是从TXT判定HTTP开头的字段然后遍历到linkgrabber抽取正则匹配格式的链接，功能就是这么多，这段也墨迹了很久终于在20块的威慑下出来了，越想自己越傻逼。
+    
