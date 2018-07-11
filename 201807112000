@@ -1,0 +1,71 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jul  5 13:29:28 2018
+
+@author: YY
+"""
+
+import linkGrabber
+import sys,re,traceback
+from collections import Counter
+
+user_agents = ['Mozilla/5.0 (Windows NT 6.1; WOW64; rv:23.0) Gecko/20130406 Firefox/23.0', \
+     'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0', \
+     'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/533+ \
+     (KHTML, like Gecko) Element Browser 5.0', \
+     'IBM WebExplorer /v0.94', 'Galaxy/1.0 [en] (Mac OS X 10.5.6; U; en)', \
+     'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)', \
+     'Opera/9.80 (Windows NT 6.0) Presto/2.12.388 Version/12.14', \
+     'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) \
+     Version/6.0 Mobile/10A5355d Safari/8536.25', \
+     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) \
+     Chrome/28.0.1468.0 Safari/537.36', \
+     'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/5.0; TheWorld)']
+
+
+def get_domain(url0):
+
+    try:    
+        links = linkGrabber.Links(url0)
+        try:           
+            gb = links.find(href=re.compile("twitter.com"),pretty=False)
+            n = len(gb)
+            txt=url0+'----'
+            for i in range(n):
+                url = gb[i]['href']
+                print(url)
+                txt+=url+'#'
+            with open("result.txt", 'a+',encoding='utf8',errors='ignore') as f:
+                if n != 0:
+                    f.write(txt+'\n')                
+                else:
+                    f.write(txt+'没有链接'+'\n')   
+        except ConnectionError:
+            pass
+    except:
+        pass
+        print("链接打不开")
+        txt=url0+'----'
+        txt+=url0+'#'
+        with open("result.txt", 'a+',encoding='utf8',errors='ignore') as f:
+            f.write(txt+'链接打不开'+'\n')
+###############################################################################################################################   
+##################:::::txt=url0+'----'后面的txt+=url0+'#'加上和不加上自己看看文件输出结果体会txt+的赋值效果：：：：#################    
+###############################################################################################################################
+
+
+def get_txt_links():
+    '获取txt文件中的链接，重复的只获取一遍'
+    urls=[]
+    with open("666.txt", 'r',encoding='utf8',errors='ignore') as f:
+        for line in f.readlines():
+            if line.strip().startswith('http'):
+                if line.strip() in urls:
+                    pass
+                else:
+                    urls.append(line.strip())
+        return urls
+# print(get_txt_links())
+for each in get_txt_links():
+    get_domain(each)
+    
