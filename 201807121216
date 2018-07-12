@@ -230,3 +230,19 @@ Western Sahara	撒哈拉沙漠西部	Northern Africa	北非	http://data.un.org/e
 Yemen	也门	Western Asia	西亚	http://data.un.org/en/iso/ye.html
 Zambia	赞比亚	Eastern Africa	东非	http://data.un.org/en/iso/zm.html
 Zimbabwe	津巴布韦	Eastern Africa	东非	http://data.un.org/en/iso/zw.html
+
+
+###################################################################################################################
+################链接内数据留作后续备用，数据来源联合国网站：data.un.org/en/index.html##################################
+###################################################################################################################
+import linkGrabber，re
+
+links = linkGrabber.Links('http://data.un.org/en/index.html')           
+gb = links.find(href=re.compile("iso"),pretty=False)
+n = len(gb)
+for i in range(n):
+    url = gb[i]['href']
+    print(url)
+    with open("result1.txt", 'a+',encoding='utf8',errors='ignore') as f:
+        f.write(url+'\n')                
+
