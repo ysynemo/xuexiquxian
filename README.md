@@ -9,3 +9,5 @@
 201807112000 -- TXT->判定http开头->linkgrabber->http://twitter.com/? ->TXT （final）
 
 201807121216 -- 联合国收录的全球232个国家和地区
+
+201807181513 -- TXT->google->http://web.com ->TXT
