@@ -1,0 +1,90 @@
+
+go
+
+######################################################################################################################################
+##########scopus&2017sci期刊列表分别30k&12k通过以下方法在http://ulrichsweb.serialssolutions.com/获得网站，开放获取，出版时间等信息#########
+######################################################################################################################################
+
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jul 25 21:18:48 2018
+
+@author: YY
+"""
+
+
+import selenium
+from selenium import webdriver
+import sys,re,traceback
+from collections import Counter
+import time
+
+
+user_agents = ['Mozilla/5.0 (Windows NT 6.1; WOW64; rv:23.0) Gecko/20130406 Firefox/23.0', \
+     'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0', \
+     'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/533+ \
+     (KHTML, like Gecko) Element Browser 5.0', \
+     'IBM WebExplorer /v0.94', 'Galaxy/1.0 [en] (Mac OS X 10.5.6; U; en)', \
+     'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)', \
+     'Opera/9.80 (Windows NT 6.0) Presto/2.12.388 Version/12.14', \
+     'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) \
+     Version/6.0 Mobile/10A5355d Safari/8536.25', \
+     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) \
+     Chrome/28.0.1468.0 Safari/537.36', \
+     'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/5.0; TheWorld)']
+
+
+
+
+
+def get_domain(name):
+    try:
+        chrome_path = r"C:\Users\YY\AppData\Local\Google\Chrome\Application\chromedriver.exe"
+        driver = webdriver.Chrome(chrome_path)
+        driver.get("http://ulrichsweb.serialssolutions.com/")
+        time.sleep(2)
+##############################################################
+###############获取初始页面####################################
+##############################################################
+        driver.find_element_by_xpath("""//*[@id="query"]""").click()
+        driver.find_element_by_name('query').clear()
+        driver.find_element_by_name('query').send_keys(name)   
+        driver.find_element_by_xpath("""//*[@id="submitSearchTop"]""").click()
+        time.sleep(5)
+#############################################################
+###############解析二级页面###################################
+#############################################################
+        driver.find_element_by_class_name('titleDetailsLink').click()
+        driver.implicitly_wait(5)
+        a = driver.find_element_by_xpath("""//*[@id="basicDescriptionContainer"]/table/tbody/*/td/a""").get_attribute('href')
+        b = driver.find_element_by_xpath("""//*[@id="basicDescriptionContainer"]/table/tbody/tr[6]/td""").text
+        try:
+            c = driver.find_element_by_id("title_openAccess").text
+            print(a,'#',b,'#',c)
+            with open('D://2.txt','a',encoding='utf8',errors='ignore') as f:
+                f.write('源：{}\t网址：{}\t出版时间：{}\t链接：{}\n'.format(name,a,b,c))
+        except:
+            c_no = '不是开放获取文件'
+            print(a,'#',b,'#',c_no)
+            with open('D://2.txt','a',encoding='utf8',errors='ignore') as f:
+                f.write('源：{}\t网址：{}\t出版时间：{}\t链接：{}\n'.format(name,a,b,c_no))
+        
+        driver.close()
+    except:
+        pass
+        
+###############################################################################################################################   
+###############################################################################################################################
+
+def get_journal_name():
+    '获取txt文件中的链接，重复的只获取一遍'
+    journal=[]
+    with open("D://1.txt", 'r',encoding='utf8',errors='ignore') as f:
+        for line in f.readlines():
+            journal.append(line.strip())
+        return journal
+# print(get_txt_links())
+for each in get_journal_name():
+    get_domain(each)
+
+    
