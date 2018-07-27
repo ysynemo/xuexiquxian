@@ -1,0 +1,41 @@
+import time
+import re
+import selenium
+from selenium import webdriver
+
+
+user_agent = ("Mozilla/5.0 (Windows NT 10.0; WOW64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/56.0.2924.87 Safari/537.36")
+
+chrome_path = r"C:\Users\YY\AppData\Local\Google\Chrome\Application\chromedriver.exe"
+driver = webdriver.Chrome(chrome_path)
+driver.get("http://ulrichsweb.serialssolutions.com/")
+time.sleep(2)
+
+##############################################################
+###############获取初始页面####################################
+##############################################################
+driver.find_element_by_xpath("""//*[@id="query"]""").click()
+driver.find_element_by_name('query').clear()
+driver.find_element_by_name('query').send_keys('BMC Urology')   
+driver.find_element_by_xpath("""//*[@id="submitSearchTop"]""").click()
+time.sleep(5)
+#############################################################
+###############解析二级页面###################################
+#############################################################
+page_source = driver.page_source
+
+driver.find_element_by_class_name('titleDetailsLink').click()
+driver.implicitly_wait(10)
+a = sources_list = driver.find_element_by_xpath("""//*[@id="basicDescriptionContainer"]/table/tbody/*/td/a""").get_attribute('href')
+b = driver.find_element_by_xpath("""//*[@id="basicDescriptionContainer"]/table/tbody/tr[6]/td""").text
+c = driver.find_element_by_id("title_openAccess").text
+
+print(a,'#',b,'#',c)
+with open('D://777++5.txt','a',encoding='utf8',errors='ignore') as f:
+    f.write('网址：{}\t出版时间：{}\t链接：{}\n'.format(a,b,c))
+driver.close()
+
+####################################################################################################################################
+http://ulrichsweb.serialssolutions.com/的一个爬虫，获取期刊的网址，开刊时间和是否为开放存取
