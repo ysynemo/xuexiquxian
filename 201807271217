@@ -30,9 +30,12 @@ driver.find_element_by_class_name('titleDetailsLink').click()
 driver.implicitly_wait(10)
 a = sources_list = driver.find_element_by_xpath("""//*[@id="basicDescriptionContainer"]/table/tbody/*/td/a""").get_attribute('href')
 b = driver.find_element_by_xpath("""//*[@id="basicDescriptionContainer"]/table/tbody/tr[6]/td""").text
-c = driver.find_element_by_id("title_openAccess").text
+try:
+    c = driver.find_element_by_id("title_openAccess").text
+    print(a,'#',b,'#',c)
+except:
+    print(a,'#',b,'#',c+'不是开放获取文件')
 
-print(a,'#',b,'#',c)
 
 items = driver.find_elements_by_xpath("""//*[@id="basicDescriptionContainer"]/table/tbody/*/td""")
 for item in items:
