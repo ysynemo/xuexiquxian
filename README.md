@@ -13,3 +13,5 @@
 201807181513 -- TXT->google->http://web.com ->TXT
 
 201807271211 -- 2016SCI医学期刊名录抽取完毕
+
+201807271217 -- http://ulrichsweb.serialssolutions.com/ 的一个爬虫脚本，为后续工作做准备
