@@ -33,6 +33,12 @@ b = driver.find_element_by_xpath("""//*[@id="basicDescriptionContainer"]/table/t
 c = driver.find_element_by_id("title_openAccess").text
 
 print(a,'#',b,'#',c)
+
+items = driver.find_elements_by_xpath("""//*[@id="basicDescriptionContainer"]/table/tbody/*/td""")
+for item in items:
+    text = item.text
+    print(text)
+
 with open('D://777++5.txt','a',encoding='utf8',errors='ignore') as f:
     f.write('网址：{}\t出版时间：{}\t链接：{}\n'.format(a,b,c))
 driver.close()
