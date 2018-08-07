@@ -5,10 +5,10 @@ import tweepy,time
 from tweepy import OAuthHandler, API
 
 def getAPI():
-    consumer_key = 'xt603nli79I6dkBEZTyve'
-    consumer_secret = 'yCEYZLGR0wg8KAPFynUBDAVMHjPWqtRGv3UG'
-    access_token = '851972704-0R2LLNRSLCWDRyivNUOimhGqXVt5YUc'
-    access_secret = 'Dymgi4uBZ5XTtFrcKKi8CJb6OmNNaUqUy'
+    consumer_key = 'xt6Ci79I6dkBEZTe'
+    consumer_secret = 'yCSCGN5gMtLGR0wg8KAPFynUBDAVMRGv3UG'
+    access_token = '8512045512704-0RSLCWDRyivNUOim5YUc'
+    access_secret = 'Dyr2gF368gi4TtFrcKKi8CJUqUy'
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_secret)
     print ('success')
@@ -27,8 +27,7 @@ def getUserInfo(api,q,mode = 'search'):
     id = user['id']
     name = user['name']
     screen_name = user['screen_name']
-    description = user['description']
-    return str(id), name, screen_name, description
+    return str(id), name, screen_name
 
 def limit_handled(cursor):
     while True:
@@ -42,7 +41,7 @@ def limit_handled(cursor):
 
 def getFriendsInfo(api,userid):
     friendName = []
-    for friend in limit_handled(tweepy.Cursor(api.friends,id = userid,count = 20).items()):
+    for friend in limit_handled(tweepy.Cursor(api.friends,id = userid,count = 20000).items()):
         # if follower.friends_count < 300:
         #     print follower.screen_name
         friendName.append(friend.screen_name)
@@ -50,7 +49,7 @@ def getFriendsInfo(api,userid):
     return friendName
 
 if __name__ == "__main__":
-    api = getAPI()
+    api = getAPI()  
     f = open('query_20.txt','r')
     f_out = open('result_20.txt','w')
     for line in f:
@@ -59,25 +58,24 @@ if __name__ == "__main__":
         result = getUserInfo(api,query)
         if result:
             print('#'.join(result))
-            f_out.write(u'#'.join(result)+u'\n')
+            f_out.write(u'#'.join(result).replace('\n','')+u'\n')
         else:
             f_out.write('do not exist'+'\n')
     f_out.close()
 
-    friendsName = getFriendsInfo(api, result[0])
-    for name in friendsName:
-        print(name)
-
-#################################################################################################################
-####################Tweepy Streaming API实时返回结果##############################################################
-#################################################################################################################
+#     friendsName = getFriendsInfo(api, result[0])
+#     for name in friendsName:
+#         print(name)
+#############################################################################################################################
+####################Tweepy Streaming API实时返回结果1#########################################################################
+#############################################################################################################################
 import tweepy
 from tweepy import OAuthHandler
 
-consumer_key = 'xt602vTC379I6dkBEZTyve'
-consumer_secret = 'yCURohSCGN5gMtxWBDAVMHjPWqtRGv3UG'
-access_token = '8519724520455RSLCWDRyivNUOimhGqXVt5YUc'
-access_secret = 'Dymg3AzVr2gF36cKKi8CJb6OmNNaUqUy'
+consumer_key = 'x02vTC3nldkTyve'
+consumer_secret = 'yCURogMtxWEYwg8KAPFynUBDAVMHjPv3UG'
+access_token = '8519045512704-0RSLCWDRyivNUOimh5YUc'
+access_secret = 'DymgVr2gF3685XTtFrcKKi8CJb6UqUy'
 auth = OAuthHandler(consumer_key,consumer_secret)
 auth.set_access_token(access_token,access_secret)
 
@@ -87,7 +85,6 @@ from tweepy import Stream
 from tweepy import OAuthHandler
 from tweepy.streaming import StreamListener
 import time
-
 
 class listener(StreamListener):
     def on_data(self, data):
@@ -99,7 +96,7 @@ class listener(StreamListener):
             followers_count = data.split(',"followers_count":')[1].split(',"friends_count')[0]
             saveThis = date+""+tweet+";;;"+screen_name+";;;"+location+";;;"+followers_count
             print(saveThis)
-            saveFile = open('Streaming-SAVED.txt','a')
+            saveFile = open('twitDB11.txt','a')
             saveFile.write(saveThis)
             saveFile.write('\n')
             saveFile.close()
@@ -109,13 +106,39 @@ class listener(StreamListener):
     def on_error(self, status):
         print(status)
 
-
 twitterStream = Stream(auth, listener())
-twitterStream.filter(track=["journal"])
+twitterStream.filter(track=["PS4"])
+#############################################################################################################################
+####################Tweepy Streaming API实时返回结果2#########################################################################
+#############################################################################################################################
+from tweepy import Stream
+from tweepy import StreamListener
+import tweepy
+from tweepy import OAuthHandler
 
-######################################################################################################################
-######################################阿里指数网页指定商品名称获取商品的阿里指数，只能抓取一年#############################
-######################################################################################################################
+consumer_key = 'xt02vTli79EZTye'
+consumer_secret = 'yCURSN5gMtxWEYZLGR0wg8KAPFynUHjP3UG'
+access_token = '85194455120R2LLNRSLCWDRyivNUOimhGq5YUc'
+access_secret = 'Dy3Az368gi4uBZ5XTtFrcKKimNNqUy'
+
+auth = OAuthHandler(consumer_key,consumer_secret)
+auth.set_access_token(access_token,access_secret)
+
+api = tweepy.API(auth)
+
+class listener(StreamListener):
+    def on_data(self, data):
+        print(data)
+        return True
+    
+    def on_error(self, status):
+        print(status)
+        
+twitterStream = Stream(auth, listener())
+twitterStream.filter(track=["car"])
+#############################################################################################################################
+######################################阿里指数网页指定商品名称获取商品的阿里指数，只能抓取一年####################################
+#############################################################################################################################
 from selenium import webdriver
 from lxml import etree
 import json
