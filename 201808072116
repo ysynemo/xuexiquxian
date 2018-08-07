@@ -1,0 +1,211 @@
+#############################################################################################################################
+########################Tweepy REST API获取返回结果###########################################################################
+#############################################################################################################################
+import tweepy,time
+from tweepy import OAuthHandler, API
+
+def getAPI():
+    consumer_key = 'xt603nli79I6dkBEZTyve'
+    consumer_secret = 'yCEYZLGR0wg8KAPFynUBDAVMHjPWqtRGv3UG'
+    access_token = '851972704-0R2LLNRSLCWDRyivNUOimhGqXVt5YUc'
+    access_secret = 'Dymgi4uBZ5XTtFrcKKi8CJb6OmNNaUqUy'
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_secret)
+    print ('success')
+    api = tweepy.API(auth)
+    return api
+def getUserInfo(api,q,mode = 'search'):
+    if mode == 'search':#采用搜索模式进行用户信息采集
+        users = api.search_users(q, 1, 1)
+        if len(users) == 0:
+            print('user does not exist')
+            return None
+        else:
+            user = users[0]._json
+    else:#采用直接获取用户信息的模式获取
+        user = api.get_user(q)
+    id = user['id']
+    name = user['name']
+    screen_name = user['screen_name']
+    description = user['description']
+    return str(id), name, screen_name, description
+
+def limit_handled(cursor):
+    while True:
+        try:
+            yield cursor.next()
+        except tweepy.RateLimitError:
+            time.sleep(15 * 60)
+#By default, friends method of API class, returns only list of 20 users per call,
+# and by Twitter API you are limited to 15
+# calls only per window (15-minute). Thus you can only fetch 20 x 15 = 300 friends within 15-minutes.
+
+def getFriendsInfo(api,userid):
+    friendName = []
+    for friend in limit_handled(tweepy.Cursor(api.friends,id = userid,count = 20).items()):
+        # if follower.friends_count < 300:
+        #     print follower.screen_name
+        friendName.append(friend.screen_name)
+        print(friend.screen_name)
+    return friendName
+
+if __name__ == "__main__":
+    api = getAPI()
+    f = open('query_20.txt','r')
+    f_out = open('result_20.txt','w')
+    for line in f:
+        line = line.strip()
+        query = line
+        result = getUserInfo(api,query)
+        if result:
+            print('#'.join(result))
+            f_out.write(u'#'.join(result)+u'\n')
+        else:
+            f_out.write('do not exist'+'\n')
+    f_out.close()
+
+    friendsName = getFriendsInfo(api, result[0])
+    for name in friendsName:
+        print(name)
+
+#################################################################################################################
+####################Tweepy Streaming API实时返回结果##############################################################
+#################################################################################################################
+import tweepy
+from tweepy import OAuthHandler
+
+consumer_key = 'xt602vTC379I6dkBEZTyve'
+consumer_secret = 'yCURohSCGN5gMtxWBDAVMHjPWqtRGv3UG'
+access_token = '8519724520455RSLCWDRyivNUOimhGqXVt5YUc'
+access_secret = 'Dymg3AzVr2gF36cKKi8CJb6OmNNaUqUy'
+auth = OAuthHandler(consumer_key,consumer_secret)
+auth.set_access_token(access_token,access_secret)
+
+api = tweepy.API(auth)
+
+from tweepy import Stream
+from tweepy import OAuthHandler
+from tweepy.streaming import StreamListener
+import time
+
+
+class listener(StreamListener):
+    def on_data(self, data):
+        try:
+            date = data.split('created_at":"')[1].split('","id')[0]
+            tweet = data.split(',"text":"')[1].split('","source')[0]
+            screen_name = data.split(',"screen_name":"')[1].split('","location')[0]
+            location = data.split(',"location":"')[1].split('","url')[0]
+            followers_count = data.split(',"followers_count":')[1].split(',"friends_count')[0]
+            saveThis = date+""+tweet+";;;"+screen_name+";;;"+location+";;;"+followers_count
+            print(saveThis)
+            saveFile = open('Streaming-SAVED.txt','a')
+            saveFile.write(saveThis)
+            saveFile.write('\n')
+            saveFile.close()
+            return True
+        except BaseException:
+            time.sleep(5)
+    def on_error(self, status):
+        print(status)
+
+
+twitterStream = Stream(auth, listener())
+twitterStream.filter(track=["journal"])
+
+######################################################################################################################
+######################################阿里指数网页指定商品名称获取商品的阿里指数，只能抓取一年#############################
+######################################################################################################################
+from selenium import webdriver
+from lxml import etree
+import json
+import datetime
+import os
+
+class AliIndex:
+    def __init__(self):
+        self.index_page = 'https://index.1688.com/alizs/market.htm'
+    '''搜索指数入口'''
+    def search_index(self, search_word):
+        driver = webdriver.Chrome()
+        driver.get(self.index_page)
+        e1 = driver.find_element_by_id('alizs-input')
+        e1.send_keys(search_word)
+        e2 = driver.find_element_by_id('alizs-submit')
+        e2.click()
+        page_source = driver.page_source
+        driver.close()
+        return page_source
+
+    '''数据解析'''
+    def data_parser(self, content):
+        selector = etree.HTML(content)
+        data = json.loads(selector.xpath('//input[@id="main-chart-val"]/@value')[0])
+        purchaseIndex1688 = data['purchaseIndex1688']['index']['history']
+        supplyIndex = data['supplyIndex']['index']['history']
+        purchaseIndexTb = data['purchaseIndexTb']['index']['history']
+        today = datetime.date.today()
+        date_list = [(today - datetime.timedelta(days=num)).strftime('%Y-%m-%d') for num in range(366, 0, -1)]
+        purchase_index_1688 = zip(date_list, purchaseIndex1688)
+        supply_index = zip(date_list, supplyIndex)
+        purchase_index_tb = zip(date_list, purchaseIndexTb)
+        return purchase_index_1688, supply_index, purchase_index_tb
+
+    '''以写入本地文件的方式，保存数据'''
+    def write_localfiles(self, word, data, filepath):
+        if not os.path.exists(word):
+            os.makedirs(word)
+        with open(filepath, 'w+') as f:
+            for item in data:
+                f.write(item[0] + ',' + str(item[1]) + "\n")
+        f.close()
+
+    '''导出数据'''
+    def output_data(self, word, purchase_index_1688, supply_index, purchase_index_tb):
+        self.write_localfiles(word, purchase_index_1688, '%s/%s.txt'%(word, 'purchase_index_1688'))
+        self.write_localfiles(word, supply_index, '%s/%s.txt' % (word, 'supply_index'))
+        self.write_localfiles(word, purchase_index_tb, '%s/%s.txt' % (word, 'purchase_index_tb'))
+
+    '''主函数'''
+    def index_main(self, word):
+        print('step1, open page....')
+        page_source = self.search_index(word)
+        print('step2, get data....')
+        purchase_index_1688, supply_index, purchase_index_tb = self.data_parser(page_source)
+        self.output_data(word, purchase_index_1688, supply_index, purchase_index_tb)
+        print('step3, %s finished....'% word)
+
+def demo():
+    ali = AliIndex()
+    search_word = '女'
+    ali.index_main(search_word)
+
+demo()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
