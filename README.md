@@ -17,3 +17,5 @@
 201807271217 -- http://ulrichsweb.serialssolutions.com/ 的一个爬虫脚本，为后续工作做准备
 
 201807272150 -- http://ulrichsweb.serialssolutions.com/ 的一个爬虫脚本（final）
+
+201808072116 -- Tweepy REST API + Tweepy Streaming API + 阿里指数爬虫
