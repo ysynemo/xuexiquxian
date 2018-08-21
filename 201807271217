@@ -8,7 +8,7 @@ user_agent = ("Mozilla/5.0 (Windows NT 10.0; WOW64) "
             "AppleWebKit/537.36 (KHTML, like Gecko) "
             "Chrome/56.0.2924.87 Safari/537.36")
 
-chrome_path = r"C:\Users\YY\AppData\Local\Google\Chrome\Application\chromedriver.exe"
+chrome_path = r"C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
 driver = webdriver.Chrome(chrome_path)
 driver.get("http://ulrichsweb.serialssolutions.com/")
 time.sleep(2)
