@@ -1,0 +1,62 @@
+# -*- coding: utf-8 -*-
+"""
+Spyder Editor
+
+This is a temporary script file.
+"""
+import time
+import re
+import selenium
+from selenium import webdriver
+import linkGrabber
+import sys,re,traceback
+from collections import Counter
+
+user_agent = ("Mozilla/5.0 (Windows NT 10.0; WOW64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/56.0.2924.87 Safari/537.36")
+
+chrome_path = r"C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
+driver = webdriver.Chrome(chrome_path)
+driver.get("http://ulrichsweb.serialssolutions.com/")
+time.sleep(2)
+
+##############################################################
+###############获取初始页面####################################
+##############################################################
+driver.find_element_by_xpath("""//*[@id="query"]""").click()
+driver.find_element_by_name('query').clear()
+driver.find_element_by_name('query').send_keys('BMC Urology')   
+driver.find_element_by_xpath("""//*[@id="submitSearchTop"]""").click()
+time.sleep(5)
+#############################################################
+###############解析二级页面###################################
+#############################################################
+page_source = driver.page_source
+
+driver.find_element_by_class_name('titleDetailsLink').click()
+driver.implicitly_wait(10)
+
+node_url = driver.find_element_by_xpath("""//*[@id="basicDescriptionContainer"]/table/tbody/*/td/a""").click()
+curent_url = driver.current_url
+
+try:
+    links = linkGrabber.Links(curent_url)
+    try:
+        gb = links.find(href=re.compile("twitter.com"),pretty=False)
+        n = len(gb)
+        txt=url0+'----'
+        for i in range(n):
+            url = gb[i]['href']
+            print(url)
+            txt+=url+'#'
+        with open("result.txt", 'a+',encoding='utf8',errors='ignore') as f:
+            f.write(txt+'\n')
+    except:
+        print("没有这个链接")
+except: 
+    pass
+    
+##########################################################################################################################
+############################重新整和了之前的步骤，总结：脚本最好以结果为导向，这样可以提高非常高的效率，而不是取中间值导向#########
+##########################################################################################################################
