@@ -19,3 +19,5 @@
 201807272150 -- http://ulrichsweb.serialssolutions.com/ 的一个爬虫脚本（final）
 
 201808072116 -- Tweepy REST API + Tweepy Streaming API + 阿里指数爬虫
+
+201808212151 -- （重新做了系统，重新配置了环境）调整之前的部分代码ulrichweb -> linkgrabber -> http://twitter.com/? -> TXT (final)
