@@ -20,4 +20,4 @@
 
 201808072116 -- Tweepy REST API + Tweepy Streaming API + 阿里指数爬虫
 
-201808212151 -- （重新做了系统，重新配置了环境）调整之前的部分代码ulrichweb -> linkgrabber -> http://twitter.com/? -> TXT (final)
+201808212151 -- （重新做了系统，配置环境）调整之前的部分代码ulrichweb -> linkgrabber -> http://twitter.com/? -> TXT (final)
