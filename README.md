@@ -24,4 +24,4 @@
 
 201810120837 -- TXT->google->出版商（processing）
 
-201810141318 -- TXT->google->出版商(final)
+201810141318 -- 一条龙（粗筛：API过滤掉没有返回结果的）（定位url：google定位有返回结果的官网）（抽取:抽取官网中的twitter链接）（final）
