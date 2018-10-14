@@ -1,0 +1,64 @@
+# -*- coding: utf-8 -*-
+"""
+Spyder Editor
+
+This is a temporary script file.
+"""
+import time
+import linkGrabber
+import re
+from selenium import webdriver
+
+
+user_agent = ("Mozilla/5.0 (Windows NT 10.0; WOW64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/56.0.2924.87 Safari/537.36")
+
+fr = open('D:/B-大连理工大学期间材料/1.0-期刊推特关注网络/1.0.0---SCI收录期刊2017的出版商Twitter关注网络/google_selenium_出版商官网_list/出版商.txt', encoding='utf-8')
+data = fr.readlines()
+keywords = []
+for d in data:
+    d = d.replace('\n','')
+    keywords.append(d)
+
+try:
+##############################################################
+###############获取初始页面####################################
+##############################################################
+    for word in keywords:   #调用webdriver
+        chrome_path = r"C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
+        driver = webdriver.Chrome(chrome_path)
+        driver.get("https://www.google.com")
+        driver.implicitly_wait(1)
+        time.sleep(1)
+        try:    #输入关键词检索
+            driver.find_element_by_class_name('gsfi').clear
+            driver.find_element_by_class_name('gsfi').send_keys(word)
+            driver.find_element_by_xpath("""//*[@id="tsf"]/div[2]/div[3]/center/input[1]""").click()
+            driver.implicitly_wait(5)
+#############################################################
+###############解析二级页面###################################
+#############################################################
+        
+            info = driver.find_element_by_class_name('r')  #获取头条内容保存
+            link = info.find_element_by_tag_name('a').get_attribute('href')
+            text = info.find_element_by_tag_name('h3').text
+            with open('D:/B-大连理工大学期间材料/1.0-期刊推特关注网络/1.0.0---SCI收录期刊2017的出版商Twitter关注网络/google_selenium_出版商官网_list/出版商_twitter.txt','a',encoding='utf8',errors='ignore') as f:
+                 f.write('源：{}\t标题：{}\t链接：{}\n'.format(word,text,link))
+            driver.close()
+        except:
+            with open('D:/B-大连理工大学期间材料/1.0-期刊推特关注网络/1.0.0---SCI收录期刊2017的出版商Twitter关注网络/google_selenium_出版商官网_list/失败日志.txt','a',encoding='utf8',errors='ignore') as f:
+                f.write('源：{}\n'.format(word + "页面元素获取失败"))            
+            pass
+            driver.close()
+except:
+    pass
+    print(word + "GOOGLE调用失败")
+    with open('D:/B-大连理工大学期间材料/1.0-期刊推特关注网络/1.0.0---SCI收录期刊2017的出版商Twitter关注网络/google_selenium_出版商官网_list/失败日志.txt','a',encoding='utf8',errors='ignore') as f:
+        f.write('源：{}\n'.format(word + "GOOGLE调用失败"))
+    driver.close()
+
+
+###########################################################################################################################
+出版商 google 筛选一遍  
+    
