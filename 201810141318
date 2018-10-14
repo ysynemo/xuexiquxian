@@ -1,7 +1,409 @@
+#############################################################################################################################
+########################Tweepy REST API获取返回结果###########################################################################
+#############################################################################################################################
+
+import tweepy,time
+from tweepy import OAuthHandler, API
+import requests
+
+def getAPI():
+    consumer_key = 'xt602vTCI6dkBEZTyve'
+    consumer_secret = 'yCURoYZLGR0wg8KAPFynUBDAVMHjPWqtRGv3UG'
+    access_token = '851972452LLNRSLCWDRyivNUOimhGqXVt5YUc'
+    access_secret = 'Dymg3Az4uBZ5XTtFrcKKi8CJb6OmNNaUqUy'
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_secret)
+    print ('success')
+    api = tweepy.API(auth)
+    return api
+def getUserInfo(api,q,mode = 'search'):
+    if mode == 'search':#采用搜索模式进行用户信息采集
+        users = api.search_users(q, 1, 1)
+        if len(users) == 0:
+            print('user does not exist')
+            return None
+        else:
+            user = users[0]._json
+    else:#采用直接获取用户信息的模式获取
+        user = api.get_user(q)  
+    id = user['id']
+    screen_name = user['screen_name']
+    return str(id), screen_name
+
+
+def limit_handled(cursor):
+    while True:
+        try:
+            yield cursor.next()
+        except tweepy.RateLimitError:
+            time.sleep(15 * 60)
+
+
+if __name__ == "__main__":
+    api = getAPI()
+    f = open('医学期刊.txt','r')
+    f_out = open('医学期刊_result.txt','w')
+    for line in f:
+        line = line.strip()
+        query = line
+        result = getUserInfo(api,query)
+        if result:
+            print('#'.join(result))
+            f_out.write(u'#'.join(result)+u'\n')
+        else:
+            f_out.write('do not exist'+'\n')
+    f_out.close()
+
+###########################################################################################################################
+通过API筛选一遍，对于哪些没有用户返回结果的就直接删除掉，把有返回结果的项目保存带到下一步google或者ulsrich的步骤当中
+###########################################################################################################################
+
+success
+133749511#J Allergy Clin Immun#jacionline
+133749511#J Allergy Clin Immun#jacionline
+0
+0
+0
+982098542469656576#Dermatitis de Contacto#DermaContact
+59233474#Dr. Bhavin Patel#MichiganAllergy
+0
+951536484003311618#Annals of Allergy, Asthma & Immunology#AnnalsAllergy
+0
+0
+0
+373424571#World Allergy Org#worldallergy
+0
+36959894#ACAAI#ACAAI
+133749511#J Allergy Clin Immun#jacionline
+0
+0
+133749511#J Allergy Clin Immun#jacionline
+0
+0
+0
+0
+0
+0
+87257107#Guy René BOYER#grboyer
+1117502137#Max Planck Florida#MPFNeuro
+0
+219283200#Journal of Anatomy#JAnatomy
+856218615942696962#Steventon Lab#SteventonLab
+0
+4442260588#Australian & NZ Association of Clinical Anatomists#ANZACA_Inc
+227940087#Hymenoptera Journal#HymenopteraJour
+0
+0
+1024067653#Matt Gibson#LabGibson
+0
+0
+0
+0
+0
+0
+2474718272#eGenesis#eGenesisBio
+0
+0
+0
+0
+187639539#Jason Kovac#dockovac
+309040388#British Andrology#AndrologySoc
+829357011477340161#Grupo Andrología AEU#AndroAEU
+0
+0
+3347940568#British Journal of Anaesthesia#BJAJournals
+1008527046#J Anesthesio Clin Sc#Anesthesiology6
+22480867#Pain#_pain
+74414498#Intersurgical#intersurgical
+0
+38071657#Heather Sidari#heasid79
+419439981#EJ Anaesthesiology#EJA_Journal
+1085480209#ASRA Society#ASRA_Society
+1008527046#J Anesthesio Clin Sc#Anesthesiology6
+707876094280650753#EHF Official#EHF_Official
+49195121#Ramsin Benyamin#PainPhysician
+0
+61260975#The Pain Center#ThePainCenter
+0
+0
+0
+188558572#Pediatric Anesthesia#PedsAnesthesia
+0
+0
+972045080004644864#International Journal of Obstetric Anesthesia#IJOA_Journal
+1037795732714086400#Journal of Cardiothoracic and Vascular Anesthesia#JCVAonline
+2944929267#Papworth Anaesthesia and Critical Care#PapCriticalCare
+770005351517327363#Anesthesia&Analgesia#IARS_Journals
+1960877178#MushinMuseum#MushinMuseum
+0
+2187158167#CJA - Canadian Journal of Anesthesia#CJA_Journal
+31516265#Meister Schmerz#Meister_Schmerz
+0
+67015769#Anästhesist#Intubator1
+0
+0
+348555871#ADVANCE for Speech#ADVANCEspeech
+545204240#American Hearing RF#HearingResearch
+400359140#Ear and Hearing#EandHonline
+0
+440719416#UCL Brain Sciences#UCLBrainScience
+18992825#Proloquo2Go#proloquo2go
+3239076899#IJLCD#ijlcd
+389439784#Heather Payne#heathermarypea
+1586560369#Incisive Health#incisivehealth
+0
+0
+0
+0
+805375252574437376#Speech&Language Zone#SpeechLangZone
+3239076899#IJLCD#ijlcd
+0
+0
+3520983380#IJSLP#IJSLP
+0
+0
+0
+0
+0
+19931503#monika phonetica#monikaluna
+0
+133805633#BMJ Quality & Safety#BMJ_Qual_Saf
+15235829#Health Affairs#Health_Affairs
+2400042434#MilbankMemorial Fund#MilbankFund
+614531669#ISPORJournals#ISPORJournals
+163039991#pharmacoeconomics#ph_economics
+1529251303#GlobalImplementation#GlobalImplement
+338930010#SAGE Health Research#SAGEHealthInfo
+20272531#JohnsHopkinsMedicine#HopkinsMedicine
+913113872009240577#Psychiatric Services#APAPubPsychSvcs
+193797587#PCORI#PCORI
+0
+31205448#Johns Hopkins Children's Center#HopkinsKids
+0
+133805633#BMJ Quality & Safety#BMJ_Qual_Saf
+2565723230#AJHE#AJHE_journal
+85694611#Shannon P#shannolater
+241648599#SARE Program#SAREProgram
+0
+146298160#CDDEP#CDDEP
+76943994#AcademyHealth PHSR#PHSR_AH
+455630100#Nick Goodwin#goodwin_nick
+72050243#Interprof Editor#JICare
+0
+0
+2271081908#CKR#CKRRenal
+44783853#HHS.gov#HHSGov
+0
+0
+0
+91255882#Jason Chin#socpsychupdate
+0
+0
+0
+199665899#GHWN#GHWNetwork
+0
+2547875990#GlobHealthPromotion#GHPjournal
+138436634#Policy Integrity#PolicyIntegrity
+493456371#Abe Gong#AbeGong
+0
+0
+133802939#Injury Prevention#IP_BMJ
+0
+583233410#Elsevier#ElsevierConnect
+0
+282006200#HealthCare Angels*#HCAngel
+141148895#JECH_BMJ#JECH_BMJ
+0
+89652813#Adam Cresswell#adamfcresswell
+0
+55647330#AJMC#AJMC_Journal
+3148512680#Eric Patashnik#EricPatashnik
+0
+2565723230#AJHE#AJHE_journal
+730494343#BMJ Open Quality#BMJOpenQuality
+0
+0
+965930605153280003#Palliative and Supportive Care CEN for SLTs#PalCareCEN
+43680398#FPM#FPGMed
+992069574#CJCMH-RCSMC#CJCMH_RCSMC
+0
+0
+0
+0
+0
+0
+0
+42362196#Dr Christy Newman#thisnewman
+2414661638#Practice Management#ThePMmag
+913113872009240577#Psychiatric Services#APAPubPsychSvcs
+227288385#OH [at Work] journal#OccHealthAtWork
+400050852#EmeraldHealthCareMgt#EmeraldHCM
+0
+3061421771#European Journal of Palliative Care#EJPC_Hayward
+0
+0
+0
+1461910896#ULB ComRecherche#ULBRecherche
+385392244#SEFAPP#SEFAPP
+0
+0
+2587947330#Hurly-Burly#Hurly_Burly_NLS
+0
+0
+3429870843#Peter Schneider#PSPresseschau
+939575480#Site Psychoanalysis#sitepsych
+0
+981199001155461125#Psychoanalytic Quarterly#PsyQuarterly
+0
+0
+0
+0
+0
+0
+0
+869681522806210561#EJP#EJPBlog
+869681522806210561#EJP#EJPBlog
+242944187#JHSB#JofHSB
+893900539083313152#Augustus🇺🇸#Augustus709
+365106165#Political Psychology#PolPsyISPP
+26689687#Social Psychology#SocialPsych
+97079923#Cyberpsychology_Jn#Cyberpsych_Jn
+0
+3352310747#Evangelia Demerouti#EDemerouti
+0
+1001528380905459713#National Foundation to End Child Abuse & Neglect#endcanorg
+0
+2556033866#AME Research Group#AME_Research
+0
+0
+48375582#Beth Visser PhD#BethAV
+0
+0
+528946279#Trond Amundsen#Trond_Amundsen
+403502339#South Writ Large#SouthWritLarge
+3065951079#rolsi journal#rolsi_journal
+0
+0
+784460029#Matthew Apps#brain_apps
+989543864#Dominic Abrams#Dominic_Abrams
+374636494#John Drury#ProfJohnDrury
+0
+0
+0
+886424299#ROAPE journal#ROAPEjournal
+895254960530636800#SelfKey#SelfKey
+183548902#Ewan Birney#ewanbirney
+0
+37708418#BPD Planet#bpdguy
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+23726926#Seline Samaan#SelinaSamano
+0
+0
+245608955#Social Influence#socialfluence
+782935681790275584#Int J Sport Psychol#intjsportpsy
+188811710#The DLF#CLIRDLF
+0
+87425345#rakhshin patel#rakhshin
+0
+0
+291020879#Patricia#PatriciaKusters
+0
+0
+0
+0
+930376408383270912#Social Psychological Bulletin#SocialPsychBull
+0
+0
+3438872265#The Book Review Café#ReviewCafe
+844960466552147968#Journal of Child Psychology and Psychiatry#TheJCPP
+1543678884#Alex Thomson#AlexBThomson
+39805064#SADAG#TheSADAG
+0
+2797116708#アニメで分かる心療内科#mental_anime
+854681597827842050#Journal of Cognition#JCgntn
+171179438#Cuad.Neuropsicología#editorcnps
+0
+2987717720#UCI CNLM#ucicnlm
+17813135#PsychCentral#PsychCentral
+70951899#Neuropsychology#neuropsychblog
+0
+946740596#IPOS#IPOSPsychoOncol
+374160495#Lars Penke#LarsPenke
+0
+0
+782935681790275584#Int J Sport Psychol#intjsportpsy
+2318213621#Liz Page-GHOUL 👻🎃#page_gould
+0
+0
+66756767#JSAD#JSADJournal
+782935681790275584#Int J Sport Psychol#intjsportpsy
+0
+1935534265#ISDP#devpsybio
+0
+493204596#The Oliver Zangwill#OZC_General
+2923487928#IJCP#IJCPsychology
+32302688#Neuroscience News#NeuroscienceNew
+76809625#Healthcare Human Factors#healthcarehf
+0
+0
+0
+0
+949689326413205504#QJEP#SageQJEP
+333778463#Stress and Health#stressandhealth
+0
+1159072100#MultisensoryResearch#multisensoryres
+0
+161632331#Ellen van Dijk#ellenvdijk
+0
+2920068711#Ergonomics#ergonomics1957
+0
+134429434#Dorothy Bishop#deevybee
+0
+20542737#Vaughan Bell#vaughanbell
+730212333776191488#Brenhouse Lab#BrenhouseLab
+991679911604686848#Michael P. Hengartner, PhD#HengartnerMP
+981263672612933632#Journal of Applied Sport Psychology#JAppSportPsych
+0
+0
+471996552#SubstanceMisuse@gcu#SubMisuseGcu
+38083275#Ryan Hamilton#Hammy_SportPsyc
+0
+161296632#Keith R Laws#Keith_Laws
+956866173370585088#Clinical Child Psychology and Psychiatry#CCPPJournal
+38001218#NEDA#NEDAstaff
+270382127#Perception#Perception_ABC
+2479191487#David Zuniga, Ph.D.#drdavidz
+33340451#Casey McIber#NeuroCase
+891923507101171712#Anales de Psicología#analesps
+0
+0
+313811184#QualitéVieAuTravail#CSDeveloppement
+782935681790275584#Int J Sport Psychol#intjsportpsy
+0
+0
+0
+
+
+############################################################################################################################
+###########################################################################################################################
+
+############################################################################################################################
+###########################################################################################################################
+
+##############################################################
+
 # -*- coding: utf-8 -*-
 """
 Spyder Editor
-
 This is a temporary script file.
 """
 import time
@@ -62,12 +464,12 @@ except:
         f.write('源：{}\n'.format(word + "GOOGLE调用失败"))
     driver.close()
 
-    
-
 
 ###########################################################################################################################
-出版商 google 筛选一遍  这些出版商都是twitter有返回结果的出版商列表
- SPRINGER HEIDELBERG
+对上一步有返回结果的出版商 google 筛选一遍  这些出版商都是twitter有返回结果的出版商列表
+###########################################################################################################################
+
+SPRINGER HEIDELBERG
 MARY ANN LIEBERT, INC
 SPRINGER
 TAYLOR & FRANCIS LTD
@@ -355,4 +757,360 @@ WATER RESEARCH COMMISSION
 WILSON ORNITHOLOGICAL SOC
 WILDLIFE BIOLOGY
 VANDENHOECK & RUPRECHT
+
+
+
+############################################################################################################################
+###########################################################################################################################
+
+############################################################################################################################
+###########################################################################################################################
+
+##############################################################
+
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jul  5 13:29:28 2018
+@author: YY
+"""
+import linkGrabber
+import sys,re,traceback
+from collections import Counter
+
+user_agents = ['Mozilla/5.0 (Windows NT 6.1; WOW64; rv:23.0) Gecko/20130406 Firefox/23.0', \
+     'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:18.0) Gecko/20100101 Firefox/18.0', \
+     'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/533+ \
+     (KHTML, like Gecko) Element Browser 5.0', \
+     'IBM WebExplorer /v0.94', 'Galaxy/1.0 [en] (Mac OS X 10.5.6; U; en)', \
+     'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)', \
+     'Opera/9.80 (Windows NT 6.0) Presto/2.12.388 Version/12.14', \
+     'Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) \
+     Version/6.0 Mobile/10A5355d Safari/8536.25', \
+     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) \
+     Chrome/28.0.1468.0 Safari/537.36', \
+     'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/5.0; TheWorld)']
+
+
+def get_domain(word):
+    try:    
+        links = linkGrabber.Links(word)
+        try:           
+            gb = links.find(href=re.compile("twitter.com"),pretty=False)
+            n = len(gb)
+            for i in range(n):
+                url = gb[i]['href']
+                print(url)
+            with open("D:/B-大连理工大学期间材料/1.0-期刊推特关注网络/1.0.0---SCI收录期刊2017的出版商Twitter关注网络/google_selenium_出版商官网_list/链接_twitter.txt", 'a',encoding='utf8',errors='ignore') as f:
+                if n != 0:
+                    f.write('源：{}\t链接：{}\n'.format(word,url))
+                else:
+                    f.write('源：{}\t链接：{}\n'.format(word +"没有twitter链接"))
+        except ConnectionError:
+            pass
+    except:
+        pass
+        print("获取twitter链接失败")
+        with open("D:/B-大连理工大学期间材料/1.0-期刊推特关注网络/1.0.0---SCI收录期刊2017的出版商Twitter关注网络/google_selenium_出版商官网_list/链接_twitter.txt", 'a',encoding='utf8',errors='ignore') as f:
+            f.write('源：{}\t链接：{}\n'.format(word,"获取twitter链接失败"))
+
+def get_txt_links():
+    keywords=[]
+    with open("D:/B-大连理工大学期间材料/1.0-期刊推特关注网络/1.0.0---SCI收录期刊2017的出版商Twitter关注网络/google_selenium_出版商官网_list/链接.txt", 'r',encoding='utf8',errors='ignore') as f:
+        for line in f.readlines():
+            if line.strip().startswith('http'):
+                keywords.append(line.strip())
+        return keywords
+        
+for each in get_txt_links():
+    get_domain(each)
+
+###########################################################################################################################
+源：https://www.springer.com/	链接：链接打不开
+源：https://www.liebertpub.com/	链接：链接打不开
+源：https://www.springer.com/	链接：链接打不开
+源：https://taylorandfrancis.com/	链接：链接打不开
+源：https://ordemdosmedicos.pt/	链接：链接打不开
+源：http://www.pacinieditore.it/	链接：http://www.twitter.com/PaciniEditore/
+源：https://www.wiley.com/en-us	链接：链接打不开
+源：https://www.bme.hu/?language=en	链接：https://twitter.com/BME_en
+源：https://www.bmj.com/company/	链接：https://twitter.com/bmj_company
+源：https://shop.lww.com/	链接：https://twitter.com/lippincott
+源：http://www.hirzel.de/	链接：http://twitter.com/#!/hirzelverlag
+源：https://taylorandfrancis.com/	链接：链接打不开
+源：http://global.oup.com/	链接：https://twitter.com/oxunipress
+源：https://publons.com/publisher/267/science-press	链接：http://twitter.com/publons
+源：https://www.karger.com/	链接：链接打不开
+源：https://www.cambridge.org/	链接：链接打不开
+源：http://www.pup.cn/ztpage/hwzt/index.html	链接：链接打不开
+源：https://www.biomedcentral.com/	链接：https://twitter.com/biomedcentral
+源：https://www.cognizantcommunication.com/	链接：https://twitter.com/cogcommnews
+源：https://www.oldcitypublishing.com/	链接：链接打不开
+源：http://www.socidrogalcohol.org/	链接：链接打不开
+源：http://homepages.laas.fr/dalzilio/ABSTRACTS/CopyrightNotices/SpringerCopyright.html	链接：链接打不开
+源：https://www.wiley.com/wiley-blackwell	链接：链接打不开
+源：https://www.crcpress.com/	链接：https://twitter.com/crcpress/
+源：https://en.wikipedia.org/wiki/INT_(x86_instruction)	链接：链接打不开
+源：https://www.ice.org.uk/knowledge-and-resources/ice-publishing-journals	链接：https://twitter.com/ice_engineers
+源：https://anque.es/	链接：链接打不开
+源：https://www.agrarforschungschweiz.ch/	链接：链接打不开
+源：https://www.the-scientist.com/daily-news/french-universities-cancel-subscriptions-to-springer-journals-29882	链接：https://twitter.com/TheScientistLLC
+源：http://www.aghistorysociety.org/	链接：链接打不开
+源：https://www.colpos.mx/	链接：http://twitter.com/colpos
+源：https://www.iospress.nl/	链接：http://twitter.com/IOSPress_STM
+源：https://impa.net/	链接：https://twitter.com/IMPAassoc
+源：http://www.apaleontologica.org.ar/	链接：https://twitter.com/Apaleontologica
+源：http://www.nature.com/	链接：https://twitter.com/naturenews
+源：https://www.cell.com/	链接：链接打不开
+源：https://www.press.uchicago.edu/	链接：https://twitter.com/UChicagoPress
+源：https://brill.com/	链接：链接打不开
+源：http://amphibian-reptile-conservation.org/	链接：链接打不开
+源：https://www.um.es/	链接：https://twitter.com/UMU
+源：http://www.navarra.es/	链接：链接打不开
+源：http://www.rsc.org/	链接：https://twitter.com/RoySocChem
+源：https://www.publish.csiro.au/	链接：https://twitter.com/CSIROPublishing
+源：https://www.elsevier.com/	链接：https://twitter.com/ElsevierConnect
+源：https://www.imstat.org/	链接：链接打不开
+源：https://www.annualreviews.org/	链接：https://twitter.com/AnnualReviews
+源：http://www.csic.es/	链接：https://twitter.com/CSIC
+源：http://elsevier-masson.fr/	链接：链接打不开
+源：http://smf.emath.fr/	链接：http://twitter.com/SocMathFr
+源：https://www.sns.it/	链接：http://www.twitter.com/scuolanormale/
+源：https://carnegiemnh.org/	链接：链接打不开
+源：http://www.annfammed.org/	链接：http://twitter.com/annfammed
+源：http://www.missouribotanicalgarden.org/	链接：https://twitter.com/mobotgarden
+源：http://www.mincom.gov.az/en/	链接：https://twitter.com/AzerbaijanMCHT
+源：https://www.asme.org/	链接：链接打不开
+源：https://www.mdpi.com/	链接：https://twitter.com/MDPIOpenAccess
+源：https://appita.com/	链接：链接打不开
+源：https://en.wikipedia.org/wiki/Shanghai_University	链接：链接打不开
+源：https://www.int-res.com/	链接：链接打不开
+源：https://www.elsevier-masson.fr/	链接：https://twitter.com/elseviermasson
+源：http://www.arquivosonline.com.br/	链接：链接打不开
+源：https://www.euppublishing.com/	链接：https://twitter.com/edinburghup
+源：https://mitpress.mit.edu/	链接：https://twitter.com/mitpress
+源：https://frame-store.com/	链接：https://twitter.com/frame_denim
+源：https://www.atmosfera.unam.mx/	链接：https://twitter.com/cca_unam
+源：https://www.cmos.ca/	链接：https://twitter.com/CMOS_SCMO
+源：https://www.racgp.org.au/	链接：https://twitter.com/intent/follow?original_referer=http%3A%2F%2Ftest.racgp.org.au%2F%23&region=follow_link&screen_name=RACGP&tw_p=followbutton
+源：http://anmf.org.au/	链接：http://twitter.com/anmf_federal
+源：http://www.autexindustries.com/	链接：链接打不开
+源：http://www.korema.hr/	链接：链接打不开
+源：https://twitter.com/tandf_australia	链接：链接打不开
+源：https://www.resalliance.org/	链接：https://twitter.com/resilience_RA
+源：https://www.ernst-und-sohn.de/	链接：https://twitter.com/ernstundsohn
+源：http://www.beilstein-institut.de/	链接：链接打不开
+源：https://royalsociety.org/	链接：http://twitter.com/royalsociety
+源：https://www.insp.mx/	链接：https://twitter.com/gobmx
+源：https://www.eis2win.co.uk/	链接：https://www.twitter.com/eis2win
+源：http://www.botanicalsciences.com.mx/	链接：链接打不开
+源：http://aosis.org/	链接：链接打不开
+源：https://en.wikipedia.org/wiki/Instituto_Agron%C3%B4mico_de_Campinas	链接：链接打不开
+源：https://www.rcpsych.ac.uk/	链接：http://www.twitter.com/rcpsych
+源：http://www.who.int/	链接：链接打不开
+源：http://www.scielo.br/scielo.php?script=sci_serial&pid=0102-311X&lng=en&nrm=iso	链接：链接打不开
+源：https://www.canjurol.com/	链接：链接打不开
+源：http://viamedica-international.com/	链接：https://twitter.com/ViaMedicaIntl
+源：https://scripps.ucsd.edu/	链接：http://twitter.com/Scripps_Ocean
+源：https://www.dietitians.ca/	链接：https://twitter.com/DietitiansCAN
+源：https://www.ieee.ca/	链接：https://twitter.com/IEEECanada
+源：https://www.cma.ca/	链接：链接打不开
+源：https://www.canadianveterinarians.net/	链接：https://twitter.com/CanVetMedAssoc
+源：https://www.sys-med.de/en/emed/	链接：链接打不开
+源：https://openlibrary.org/publishers/University_of_Puerto_Rico	链接：https://twitter.com/OpenLibrary
+源：https://www.niph.go.jp/index_en.html	链接：链接打不开
+源：http://www.cmbcollect.com/	链接：链接打不开
+源：https://www.aaccnet.org/	链接：https://twitter.com/#!/AACCIntl
+源：https://www.aiche.org/	链接：http://www.twitter.com/Chenected
+源：https://en.wikipedia.org/wiki/Higher_Education_Press	链接：链接打不开
+源：https://www.minersoc.org/	链接：https://twitter.com/MinSoc_UK
+源：https://my.clevelandclinic.org/	链接：https://twitter.com/clevelandclinic
+源：http://www.techscience.com/	链接：链接打不开
+源：http://www.global-sci.org/	链接：链接打不开
+源：http://www.techno-press.org/	链接：链接打不开
+源：https://www.hindawi.com/wiley.hindawi/	链接：链接打不开
+源：https://www.coleopsoc.org/	链接：https://twitter.com/ColeopSoc?ref_src=twsrc%5Etfw
+源：http://euro-math-soc.eu/	链接：https://twitter.com/emsnewsletter
+源：https://www.helmsoc.org/	链接：链接打不开
+源：https://www.computer.org/	链接：https://twitter.com/computersociety
+源：https://www.naturalis.nl/en	链接：https://twitter.com/museumnaturalis
+源：https://www.medicinskanaklada.hr/	链接：链接打不开
+源：https://www.ecopetrol.com.co/wps/portal/es	链接：链接打不开
+源：http://www.currentmedicinegroup.com/	链接：链接打不开
+源：http://www.multi-med.com/	链接：链接打不开
+源：http://taiwan.elsevier.com/	链接：链接打不开
+源：https://en.wikipedia.org/wiki/Bird	链接：链接打不开
+源：http://www.discoverymedicine.com/	链接：链接打不开
+源：http://www.diabetes.org/	链接：http://twitter.com/AmDiabetesAssn?loc=superfooter
+源：https://www.uni-bielefeld.de/	链接：https://twitter.com/unibielefeld
+源：https://www.dukeupress.edu/	链接：https://twitter.com/DUKEpress
+源：https://en.wikipedia.org/wiki/WHO_Regional_Office_for_the_Eastern_Mediterranean	链接：链接打不开
+源：http://oaji.net/journals-list-by-publisher.html?publisher=Foundation+for+Environmental+Protection+and+Research+%28FEPR%29	链接：链接打不开
+源：https://www.kent.edu/	链接：https://www.twitter.com/kentstate
+源：https://www.cdc.gov/	链接：https://twitter.com/CDCgov
+源：https://www.endocrine.org/about-us	链接：http://twitter.com/TheEndoSociety
+源：https://umschau-verlag.de/	链接：https://twitter.com/umschau_verlag
+源：https://www.esa.int/	链接：链接打不开
+源：https://www.europaeditions.com/	链接：https://twitter.com/europaeditions
+源：http://www.quintpub.com/	链接：链接打不开
+源：https://en.wikipedia.org/wiki/Ba%C5%9Fkent_University	链接：链接打不开
+源：https://www.elsevier.com/	链接：https://twitter.com/ElsevierConnect
+源：http://www.global-sci.org/	链接：链接打不开
+源：https://www.gov.uk/food-safety-your-responsibilities/food-hygiene	链接：链接打不开
+源：https://www.nowpublishers.com/	链接：链接打不开
+源：http://www.pbf.unizg.hr/en/	链接：链接打不开
+源：https://orientalbirdclub.org/	链接：https://twitter.com/orientbirdclub
+源：http://www.zju.edu.cn/english/	链接：链接打不开
+源：http://www.fujitsu.com/global/	链接：https://twitter.com/Fujitsu_Global
+源：http://www.genetics-gsa.org/	链接：http://twitter.com/GeneticsGSA
+源：https://www.oekom.de/	链接：https://twitter.com/oekomverlag
+源：https://www.ub.edu/web/ub/en/	链接：http://twitter.com/UniBarcelona
+源：https://popups.uliege.be/1374-8505/	链接：链接打不开
+源：http://www.eng.geus.dk/	链接：https://twitter.com/FlemmingGEUS
+源：https://www.sgt.org/	链接：https://twitter.com/SocGlassTech
+源：https://www.canada.ca/en/public-health.html	链接：https://twitter.com/CPHO_Canada
+源：https://www.statcan.gc.ca/eng/start	链接：链接打不开
+源：http://www.herpconbio.org/	链接：链接打不开
+源：https://www.projecthope.org/	链接：链接打不开
+源：http://herpetologistsleague.org/	链接：http://www.twitter.com/herpleague
+源：https://publons.com/publisher/378/urban-und-vogel	链接：http://twitter.com/publons
+源：https://en.wiktionary.org/wiki/lithographia	链接：链接打不开
+源：https://www.ucpress.edu/	链接：https://twitter.com/ucpress
+源：http://m.mlb.com/player/433587/felix-hernandez	链接：//twitter.com/Mariners
+源：http://www.uh.edu/	链接：http://twitter.com/UHouston
+源：https://www.iwapublishing.com/	链接：http://twitter.com/IWAPublishing
+源：https://www.ibm.com/	链接：链接打不开
+源：https://es.wikipedia.org/wiki/Literatura_m%C3%A9dica	链接：链接打不开
+源：https://www.arccjournals.com/	链接：https://twitter.com/ARCCJournal
+源：https://autotechreview.com/	链接：https://twitter.com/AutoTechReview1
+源：https://publons.com/publisher/3844/veterinary-solutions-llc	链接：http://twitter.com/publons
+源：https://www.atlantis-press.com/	链接：链接打不开
+源：https://www.igi-global.com/	链接：http://twitter.com/igiglobal
+源：https://paxworld.com/sustainable-investing/what-is-esg/	链接：链接打不开
+源：http://ut.ac.ir/en	链接：链接打不开
+源：https://www.hanser.de/	链接：链接打不开
+源：http://www.connectjournals.com/	链接：链接打不开
+源：https://www.informs.org/	链接：https://twitter.com/INFORMS
+源：https://www.interciencia.net/	链接：https://twitter.com/RevInterciencia
+源：https://microbiologysociety.org/	链接：http://twitter.com/MicrobioSoc
+源：https://www.icsglobal.org/	链接：链接打不开
+源：http://kowsarpub.com/en/	链接：https://twitter.com/KowsarMed
+源：https://www.teagasc.ie/	链接：https://twitter.com/teagasc
+源：http://www.nasonline.org/	链接：https://twitter.com/theNASciences
+源：https://www.socgeol.it/	链接：https://twitter.com/SocGeol
+源：https://www.chiriottieditori.it/it/	链接：https://twitter.com/chiriottied
+源：https://www.ite.org/	链接：https://twitter.com/ITEHQ
+源：https://www.global.hokudai.ac.jp/	链接：https://twitter.com/HokkaidoUni
+源：http://jddonline.com/	链接：https://twitter.com/JDDOnline
+源：http://www.inda.org/	链接：//twitter.com/INDANonwovens
+源：https://www.fws.gov/	链接：https://twitter.com/USFWS?ref_src=twsrc%5Etfw
+源：http://www.slackinc.com/	链接：链接打不开
+源：http://www.researchinformation.co.uk/	链接：链接打不开
+源：https://www.frontlinemedcom.com/	链接：链接打不开
+源：https://element.eleme.io/	链接：链接打不开
+源：https://www.journals.elsevier.com/journal-of-the-neurological-sciences	链接：https://twitter.com/ElsevierConnect
+源：https://www.physiotherapy.asn.au/	链接：http://twitter.com/#!/apaphysio
+源：http://www.bom.gov.au/	链接：链接打不开
+源：https://www.jssm.org/	链接：https://twitter.com/j_s_s_m
+源：https://www.jstatsoft.org/index	链接：https://twitter.com/jstatsoft
+源：https://aisnet.org/	链接：https://twitter.com/aisconnect
+源：https://www.iasociety.org/	链接：http://twitter.com/iasociety
+源：http://www.harborsidepress.com/	链接：http://www.twitter.com/harborsidepress
+源：https://www.jove.com/	链接：http://twitter.com/JoVEjournal
+源：http://www.biolifesas.org/biolife/	链接：链接打不开
+源：https://journals.lww.com/jbjsjournal/pages/default.aspx	链接：https://twitter.com/jbjs
+源：https://spie.org/membership/spie-professional-magazine/archives/2015_jan_archive/ei-2015	链接：http://twitter.com/SPIEtweets
+源：https://trivenisteel.com/	链接：链接打不开
+源：https://www.ucm.es/	链接：http://twitter.com/unicomplutense
+源：https://www.isi.edu/	链接：https://twitter.com/USC_ISI?lang=en
+源：https://www.hmpglobal.com/	链接：链接打不开
+源：http://www.ismni.org/jmni/	链接：https://twitter.com/TheJMNI
+源：https://www.sfn.org/	链接：https://twitter.com/sfntweets
+源：http://www.polymtl.ca/	链接：链接打不开
+源：https://www.kappaalphatheta.org/foundation	链接：http://www.twitter.com/BettieLocke
+源：https://www.jospt.org/	链接：https://twitter.com/JOSPT
+源：http://www.edizioniets.com/	链接：https://twitter.com/EdizioniETS
+源：http://www.printspublications.com/	链接：https://twitter.com/printsbooks/
+源：https://www.gpo.gov/	链接：http://twitter.com/usgpo
+源：http://www.aes.org/	链接：https://twitter.com/AESorg
+源：https://www.cda-adc.ca/	链接：https://twitter.com/cdndentalassoc
+源：https://www.iisc.ac.in/	链接：链接打不开
+源：https://www.lepsoc.org/	链接：https://twitter.com/TheLepSoc
+源：http://mathsoc.jp/en/	链接：http://twitter.com/mathsocjpen/
+源：https://www.nmanet.org/	链接：https://twitter.com/NationalMedAssn
+源：http://www.torreybotanical.org/	链接：http://twitter.com/torreybotanical
+源：http://www.kma.org.kw/	链接：http://www.twitter.com/@kma_1963
+源：https://www.kybernetika.cz/	链接：链接打不开
+源：http://www.colfarma.org.ar/	链接：http://twitter.com/colfarma
+源：https://www.lepra.org.uk/	链接：https://twitter.com/LepraUK
+源：https://journals.uair.arizona.edu/index.php/lymph	链接：链接打不开
+源：https://www.ubiobio.cl/	链接：链接打不开
+源：http://www.polymat.eu/	链接：https://twitter.com/bercpolymat
+源：https://www.lms.ac.uk/	链接：https://twitter.com/LondMathSoc
+源：https://mattioli1885.com/	链接：https://twitter.com/mattioli1885
+源：https://www.sciandmed.com/	链接：链接打不开
+源：https://www.medicinabuenosaires.com/	链接：链接打不开
+源：https://bookriot.com/2017/01/19/read-harder-2017-its-time-to-talk-about-micro-presses/	链接：http://twitter.com/bookriot
+源：https://mic.com/	链接：https://twitter.com/mic
+源：http://www.molvis.org/	链接：链接打不开
+源：http://www.mrd-journal.org/	链接：链接打不开
+源：https://www.siam.org/Publications	链接：https://twitter.com/TheSIAMNews
+源：https://www.npisoy.com/	链接：链接打不开
+源：http://www.naturalhistorymag.com/archive.html	链接：链接打不开
+源：https://www.shellmuseum.org/	链接：https://www.twitter.com/shellmuseum
+源：https://www.hko.gov.hk/	链接：http://www.twitter.com/ObservatoryHK
+源：http://www.ubmmedica.com/	链接：https://twitter.com/ubmmedicaus
+源：https://www.birdlife.org/europe-and-central-asia/partners/finland-%E2%80%93-birdlife-finland	链接：https://twitter.com/BirdLifeEurope
+源：http://www.theprofesional.com/	链接：链接打不开
+源：http://uok.edu.pk/	链接：https://twitter.com/share
+源：https://www.coquinapress.com/	链接：https://twitter.com/CoquinaPress
+源：https://medicalmedia.com.au/	链接：链接打不开
+源：http://www.aapd.org/	链接：http://twitter.com/ameracadpeddent/
+源：https://www.aap.org/	链接：https://twitter.com/#!/AmerAcadPeds
+源：http://www.mapress.com/	链接：链接打不开
+源：https://www.plos.org/	链接：链接打不开
+源：https://www.mp.pl/	链接：链接打不开
+源：http://hardfest.com/	链接：链接打不开
+源：https://www.linkedin.com/company/ismithers	链接：链接打不开
+源：http://www.emacademy.org/emwave/	链接：链接打不开
+源：http://www.japan-acad.go.jp/en/	链接：链接打不开
+源：https://www.uab.cat/en	链接：https://twitter.com/UABBarcelona
+源：https://www.brown.edu/	链接：https://twitter.com/BrownUniversity
+源：https://www.advantagebizmarketing.com/	链接：https://twitter.com/b2badvantage
+源：http://rangelands.org/	链接：http://twitter.com/rangelands
+源：https://www.acgpubs.org/	链接：http://www.twitter.com/
+源：https://australianmuseum.net.au/	链接：https://twitter.com/austmus
+源：http://www.springerpub.com/	链接：https://twitter.com/Springerpub
+源：https://aigle.org.ar/	链接：链接打不开
+源：https://www.puc-campinas.edu.br/	链接：https://www.twitter.com/puccampinas
+源：https://www.rediris.es/	链接：https://www.twitter.com/RedIRIS_tweets
+源：https://en.wikipedia.org/wiki/University_of_C%C3%B3rdoba_(Spain)	链接：链接打不开
+源：https://twitter.com/upmiss	链接：链接打不开
+源：https://www.valpo.edu/	链接：http://twitter.com/valpou
+源：http://www.biologiatropical.ucr.ac.cr/	链接：https://twitter.com/Ciencia_UCR
+源：http://www.cenim.csic.es/	链接：http://www.twitter.com/CENIM_CSIC
+源：https://www.neurologia.com/	链接：https://twitter.com/revneurol
+源：http://www.geociencias.unam.mx/	链接：链接打不开
+源：https://www.mnhn.fr/	链接：https://twitter.com/Le_Museum
+源：http://www.arsdocendi.org/	链接：链接打不开
+源：http://associacaopaulistamedicina.org.br/	链接：https://twitter.com/apm_sp
+源：https://www.samedical.org/	链接：https://twitter.com/samedicalassoc 
+源：https://en.wikipedia.org/wiki/Saudi_Medical_Journal	链接：链接打不开
+源：http://www.sjweh.fi/	链接：http://twitter.com/search?q=%23CarpalTunnelRelease
+源：http://www.labxmediagroup.com/	链接：链接打不开
+源：https://www.sma.org.sg/	链接：链接打不开
+源：http://extensionmedia.com/	链接：链接打不开
+源：https://www.stata-press.com/	链接：http://twitter.com/Stata
+源：http://www.iabse.org/	链接：http://twitter.com/iabsehq
+源：https://ubbcluj.ro/	链接：https://twitter.com/UnivBabesBolyai
+源：https://www.rcsed.ac.uk/	链接：https://twitter.com/rcsed
+源：https://www.ege.edu.tr/	链接：https://twitter.com/UniversiteEge 
+源：https://www.chula.ac.th/en/	链接：https://twitter.com/ChulalongkornU
+源：http://www.tohoku.ac.jp/	链接：https://twitter.com/TohokuUniPR
+源：https://www.dresden-online.de/staatliches-museum-fuer-tierkunde.html	链接：链接打不开
+源：https://www.ugent.be/en	链接：http://www.twitter.com/ugent
+源：https://www.wef.org/	链接：链接打不开
+源：http://www.wrc.org.za/	链接：http://twitter.com/#!/WaterResearchSA
+源：https://wilsonsociety.org/	链接：https://twitter.com/@WilsonOrnithSoc
+源：http://www.wildlifebiology.org/	链接：http://twitter.com/share?url=http://www.wildlifebiology.org/&text=Wildlife%20Biology
+源：https://www.vandenhoeck-ruprecht-verlage.com/	链接：https://twitter.com/v_r_tweets?lang=de
 
