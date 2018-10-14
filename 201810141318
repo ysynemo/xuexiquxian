@@ -44,9 +44,11 @@ try:
             link = info.find_element_by_tag_name('a').get_attribute('href')
             text = info.find_element_by_tag_name('h3').text
             with open('D:/B-大连理工大学期间材料/1.0-期刊推特关注网络/1.0.0---SCI收录期刊2017的出版商Twitter关注网络/google_selenium_出版商官网_list/出版商_twitter.txt','a',encoding='utf8',errors='ignore') as f:
-                 f.write('源：{}\t标题：{}\t链接：{}\n'.format(word,text,link))
+                f.write('源：{}\t标题：{}\t链接：{}\n'.format(word,text,link))
             driver.close()
         except:
+            with open('D:/B-大连理工大学期间材料/1.0-期刊推特关注网络/1.0.0---SCI收录期刊2017的出版商Twitter关注网络/google_selenium_出版商官网_list/出版商_twitter.txt','a',encoding='utf8',errors='ignore') as f:
+                f.write('源：{}\t标题：{}\t链接：{}\n'.format(word,"blank","blank"))
             with open('D:/B-大连理工大学期间材料/1.0-期刊推特关注网络/1.0.0---SCI收录期刊2017的出版商Twitter关注网络/google_selenium_出版商官网_list/失败日志.txt','a',encoding='utf8',errors='ignore') as f:
                 f.write('源：{}\n'.format(word + "页面元素获取失败"))            
             pass
@@ -54,9 +56,13 @@ try:
 except:
     pass
     print(word + "GOOGLE调用失败")
+    with open('D:/B-大连理工大学期间材料/1.0-期刊推特关注网络/1.0.0---SCI收录期刊2017的出版商Twitter关注网络/google_selenium_出版商官网_list/出版商_twitter.txt','a',encoding='utf8',errors='ignore') as f:
+        f.write('源：{}\t标题：{}\t链接：{}\n'.format(word,"blank","blank"))
     with open('D:/B-大连理工大学期间材料/1.0-期刊推特关注网络/1.0.0---SCI收录期刊2017的出版商Twitter关注网络/google_selenium_出版商官网_list/失败日志.txt','a',encoding='utf8',errors='ignore') as f:
         f.write('源：{}\n'.format(word + "GOOGLE调用失败"))
     driver.close()
+
+    
 
 
 ###########################################################################################################################
